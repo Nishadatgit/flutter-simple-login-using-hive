@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 
 import 'screens/login.dart';
 
@@ -11,8 +12,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const LoginScreen(),
+    return GetMaterialApp(
+      home:  LoginScreen(),
       theme: ThemeData(scaffoldBackgroundColor: Colors.grey[200]),
     );
   }
