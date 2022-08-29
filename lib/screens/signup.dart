@@ -4,6 +4,8 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rive/rive.dart';
+import 'package:simole_login_hive/db/db_functions.dart';
+
 
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});
@@ -35,20 +37,23 @@ class SignupScreen extends StatelessWidget {
                         width: 350,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                            color: Colors.transparent.withOpacity(0.6),
-                            border: Border.all(),
+                            color: Colors.transparent.withOpacity(0.2),
+                            border: Border.all(
+                                color: Colors.transparent.withOpacity(0.1),
+                                width: 2),
                             borderRadius: BorderRadius.circular(10)),
                         child: Column(
                           children: [
                             const SizedBox(height: 50),
                             TextField(
+                              keyboardType: TextInputType.emailAddress,
                               controller: _emailController,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                               ),
                               decoration: InputDecoration(
-                                hintText: 'Username',
+                                hintText: 'Email',
                                 hintStyle: TextStyle(
                                     color: Colors.grey[400], fontSize: 16),
                                 enabledBorder: InputBorder.none,
@@ -142,20 +147,21 @@ class SignupScreen extends StatelessWidget {
     );
   }
 
-  void validateSignup() {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-    final confirmPassword = _confirmPasswordController.text;
-    print(email);
-    //
-    //
+  void validateSignup() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+  
 
     final isEmailValidated = EmailValidator.validate(email);
     if (email != '' && password != '' && confirmPassword != '') {
       if (isEmailValidated == true) {
         final isPasswordValidated = checkPassword(password, confirmPassword);
         if (isPasswordValidated == true) {
-          //add to db
+          
+          //
+          //
           print('success');
         }
       } else {
