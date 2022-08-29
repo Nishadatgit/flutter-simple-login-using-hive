@@ -4,27 +4,27 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rive/rive.dart';
+import 'package:simole_login_hive/db/db_functions.dart';
+import 'package:simole_login_hive/models/user_model.dart';
+import 'package:simole_login_hive/screens/home_screen.dart';
 import 'package:simole_login_hive/screens/signup.dart';
-
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          color: const Color.fromARGB(255, 10, 58, 97),
+          
           child: Stack(
             children: [
-              // const RiveAnimation.asset(
-              //   'assets/rive/space.riv',
-              //   fit: BoxFit.cover,
-              // ),
+              const RiveAnimation.asset(
+                'assets/rive/space.riv',
+                fit: BoxFit.cover,
+              ),
               Positioned(
                 top: 200,
                 left: 0,
@@ -83,7 +83,9 @@ class LoginScreen extends StatelessWidget {
                               width: 200,
                               child: ElevatedButton(
                                 onPressed: () async {
-                                 
+                                  final list =
+                                      await DBFunctions.instance.getUsers();
+                                  checkUser(list);
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
@@ -132,10 +134,33 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Future<void> checkUser() async {
+  Future<void> checkUser(List<UserModel> userList) async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
+    bool isUserFound = false;
     final isValidated = await validateLogin(email, password);
+    if (isValidated == true) {
+      await Future.forEach(userList, (user) {
+        if (user.email == email && user.password == password) {
+          isUserFound = true;
+        } else {
+          isUserFound = false;
+        }
+      });
+      if (isUserFound == true) {
+        Get.offAll(() => HomeScreen(email: email));
+        Get.snackbar(
+          'Success',
+          'Logged in as $email',
+        );
+      } else {
+        Get.snackbar('Error', 'Incorrect email or password',
+            colorText: Colors.red, backgroundColor: Colors.white);
+      }
+    } else {
+      Get.snackbar('Error', 'Fields cannot be empty',
+          colorText: Colors.red, backgroundColor: Colors.white);
+    }
   }
 
   //
